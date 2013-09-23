@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<ItemList>
+  <Item>
+    <Name>Key</Name>
+    <Location>TreeTop</Location>
+    <FailureDescription>As you reach for the key, the bird viciously attacks you, forcing you to retreat.</FailureDescription>
+    <Requires>
+      <string>birdDistracted</string>
+    </Requires>
+    <Flags>
+      <string>doorOpened</string>
+    </Flags>
+  </Item>
+  <Item>
+    <Name>Seed</Name>
+    <FailureDescription></FailureDescription>
+    <Requires></Requires>
+    <Flags>
+      <string>birdDistracted</string>
+    </Flags>
+  </Item>
+</ItemList>
