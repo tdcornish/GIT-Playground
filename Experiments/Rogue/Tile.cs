@@ -2,17 +2,58 @@
 
 namespace Rogue
 {
-  class Tile
+  internal class Tile
   {
+    public Tile(TileType type)
+    {
+      Symbol = (char)type;
+      Type = type;
+      Visible = false;
+      MakeTile(type);
+    }
+
     public char Symbol { get; private set; }
     public bool IsPassable { get; private set; }
     public ConsoleColor Color { get; private set; }
+    public bool Visible { get; set; }
+    public TileType Type { get; set; }
 
-    public Tile(char symbol, bool passable, ConsoleColor color)
+    private void MakeTile(TileType type)
     {
-      Symbol = symbol;
-      IsPassable = passable;
-      Color = color;
+      switch (type)
+      {
+        case TileType.Unused:
+          IsPassable = false;
+          Color = ConsoleColor.Black;
+          break;
+        case TileType.DirtWall:
+          IsPassable = false;
+          Color = ConsoleColor.White;
+          break;
+        case TileType.DirtFloor:   //Corrider as well, can't have two a different case becaues they have the same label
+          IsPassable = true;
+          Color = ConsoleColor.White;
+          break;
+        case TileType.Door:
+        case TileType.Upstairs:
+        case TileType.Downstairs:
+        case TileType.Chest:
+          IsPassable = true;
+          Color = ConsoleColor.DarkYellow;
+          break;
+      }
     }
+  }
+
+  internal enum TileType
+  {
+    Unused = ' ',
+    DirtWall = '#',
+    DirtFloor = '.',
+    Corrider = '.',
+    Door = '/',
+    Upstairs = '>',
+    Downstairs = '<',
+    Chest = '*'
   }
 }

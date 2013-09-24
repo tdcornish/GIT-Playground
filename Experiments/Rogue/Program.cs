@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
 
 namespace Rogue
@@ -73,7 +72,7 @@ namespace Rogue
         for (int col = 0; col < Width; col++)
         {
           Tile value = level.Get(row, col);
-          line.Append(value.Symbol);
+          line.Append(value.Visible ? value.Symbol : ' ');
         }
         line.AppendLine();
       }

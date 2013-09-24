@@ -10,7 +10,7 @@
       CurrentCol = Randomizer.GetRand(1, level.Width - 1);
 
       Tile playerStartTile = level.Get(CurrentRow, CurrentCol);
-      while (playerStartTile != Level.TileTypes["DirtFloor"] && playerStartTile != Level.TileTypes["Corrider"])
+      while (playerStartTile.Type != TileType.DirtFloor && playerStartTile.Type != TileType.Corrider)
       {
         CurrentRow = Randomizer.GetRand(1, level.Height);
         CurrentCol = Randomizer.GetRand(1, level.Width - 1);

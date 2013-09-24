@@ -9,18 +9,6 @@ namespace Rogue
     private const int Objects = 50;
     private const int RoomChance = 45;
 
-    public static Dictionary<string, Tile> TileTypes = new Dictionary<string, Tile>
-    {
-      {"Unused", new Tile (' ', false, ConsoleColor.Black) },
-      {"DirtWall", new Tile('#', false, ConsoleColor.White) },
-      {"DirtFloor", new Tile('.', true, ConsoleColor.White) },
-      {"Corrider", new Tile('.', true, ConsoleColor.Blue) },
-      {"Door", new Tile('/', true, ConsoleColor.DarkYellow) },
-      {"Upstairs", new Tile('<', true, ConsoleColor.DarkMagenta) },
-      {"Downstairs", new Tile('>', true, ConsoleColor.DarkMagenta) }, 
-      {"Chest", new Tile('*', true, ConsoleColor.Yellow) } 
-    };
-
     public int Height;
     public Tile[,] Map;
     public Player Player;
@@ -81,7 +69,7 @@ namespace Rogue
       }
     }
 
-    #region private
+    #region MapGeneration
     private void GenerateMap()
     {
       Init();
@@ -117,8 +105,8 @@ namespace Rogue
         row = Randomizer.GetRand(1, Height - 1);
         col = Randomizer.GetRand(1, Width - 1);
 
-        Tile testTile = Get(row, col);
-        if (testTile.IsPassable || testTile == TileTypes["DirtWall"])
+        TileType testTile = Get(row, col).Type;
+        if (testTile == TileType.DirtWall || testTile == TileType.DirtFloor)
         {
           IEnumerable<Tuple<Point, Direction, Tile>> surroundings = GetSurroundings(new Point(row, col));
 
@@ -156,7 +144,7 @@ namespace Rogue
           }
 
           IEnumerable<Tuple<Point, Direction, Tile>> adjacentPoints = GetSurroundings(new Point(row, col));
-          bool adjacentDoor = adjacentPoints.Any(p => p.Item3 == TileTypes["Door"]);
+          bool adjacentDoor = adjacentPoints.Any(p => p.Item3.Type == TileType.Door);
           if (adjacentDoor)
           {
             directionToBuild = null;
@@ -177,8 +165,8 @@ namespace Rogue
           if (MakeRoom(row + rowMod, col + colMod, 8, 6, directionToBuild.Value))
           {
             currentFeatures++;
-            Set(row, col, TileTypes["Door"]);
-            Set(row + rowMod, col + colMod, TileTypes["DirtFloor"]);
+            Set(row, col, new Tile(TileType.Door));
+            Set(row + rowMod, col + colMod, new Tile(TileType.DirtFloor));
           }
         }
         else if (feature >= RoomChance)
@@ -186,7 +174,7 @@ namespace Rogue
           if (MakeCorridor(row + rowMod, col + colMod, 6, directionToBuild.Value))
           {
             currentFeatures++;
-            Set(row, col, TileTypes["Door"]);
+            Set(row, col, new Tile(TileType.Door));
           }
         }
       }
@@ -200,7 +188,7 @@ namespace Rogue
       {
         for (int col = 0; col < Width; col++)
         {
-          Map[row, col] = TileTypes["Unused"];
+          Map[row, col] = new Tile(TileType.Unused);
         }
       }
     }
@@ -212,7 +200,7 @@ namespace Rogue
 
       Point[] points = GetRoomPoints(row, col, roomWidth, roomHeight, direction).ToArray();
 
-      if (points.Any(point => !InBounds(point.Row, point.Col) || GetPoint(point) != TileTypes["Unused"]))
+      if (points.Any(point => !InBounds(point.Row, point.Col) || GetPoint(point).Type != TileType.Unused))
       {
         return false;
       }
@@ -220,7 +208,7 @@ namespace Rogue
       foreach (Point point in points)
       {
         bool isWall = IsWall(row, col, roomWidth, roomHeight, point, direction);
-        Set(point.Row, point.Col, isWall ? TileTypes["DirtWall"] : TileTypes["DirtFloor"]);
+        Set(point.Row, point.Col, isWall ? new Tile(TileType.DirtWall) : new Tile(TileType.DirtFloor));
       }
       return true;
     }
@@ -388,7 +376,7 @@ namespace Rogue
       for (int colTemp = col; colTemp > endCol; colTemp--)
       {
         bool eastWestOutOfBounds = !InBounds(row, colTemp);
-        if (eastWestOutOfBounds || Get(row, colTemp) != TileTypes["Unused"])
+        if (eastWestOutOfBounds || Get(row, colTemp).Type != TileType.Unused)
         {
           return false;
         }
@@ -396,7 +384,7 @@ namespace Rogue
 
       for (int colTemp = col; colTemp > endCol; colTemp--)
       {
-        Set(row, colTemp, TileTypes["Corrider"]);
+        Set(row, colTemp, new Tile(TileType.Corrider));
       }
       return true;
     }
@@ -413,7 +401,7 @@ namespace Rogue
       for (int rowTemp = row; rowTemp < endRow; rowTemp++)
       {
         bool northSouthOutOfBounds = !InBounds(rowTemp, col);
-        if (northSouthOutOfBounds || Get(rowTemp, col) != TileTypes["Unused"])
+        if (northSouthOutOfBounds || Get(rowTemp, col).Type != TileType.Unused)
         {
           return false;
         }
@@ -421,7 +409,7 @@ namespace Rogue
 
       for (int rowTemp = row; rowTemp < endRow; rowTemp++)
       {
-        Set(rowTemp, col, TileTypes["Corrider"]);
+        Set(rowTemp, col, new Tile(TileType.Corrider));
       }
       return true;
     }
@@ -438,7 +426,7 @@ namespace Rogue
       for (int colTemp = col; colTemp < endCol; colTemp++)
       {
         bool eastWestOutOfBounds = InBounds(row, colTemp);
-        if (eastWestOutOfBounds || Get(row, colTemp) != TileTypes["Unused"])
+        if (eastWestOutOfBounds || Get(row, colTemp).Type != TileType.Unused)
         {
           return false;
         }
@@ -446,7 +434,7 @@ namespace Rogue
 
       for (int colTemp = col; colTemp < endCol; colTemp++)
       {
-        Set(row, colTemp, TileTypes["Corrider"]);
+        Set(row, colTemp, new Tile(TileType.Corrider));
       }
       return true;
     }
@@ -463,7 +451,7 @@ namespace Rogue
       for (int rowTemp = row; rowTemp > endRow; rowTemp--)
       {
         bool northSouthOutOfBounds = !InBounds(row, col);
-        if (!northSouthOutOfBounds || Get(rowTemp, col) != TileTypes["Unused"])
+        if (!northSouthOutOfBounds || Get(rowTemp, col).Type != TileType.Unused)
         {
           return false;
         }
@@ -471,7 +459,7 @@ namespace Rogue
 
       for (int rowTemp = row; rowTemp > endRow; rowTemp--)
       {
-        Set(rowTemp, col, TileTypes["Corrider"]);
+        Set(rowTemp, col, new Tile(TileType.Corrider));
       }
       return true;
     }
