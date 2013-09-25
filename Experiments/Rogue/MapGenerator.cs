@@ -144,7 +144,7 @@ namespace Rogue
       int roomHeight = Randomizer.GetRand(4, maxHeight);
       int roomWidth = Randomizer.GetRand(4, maxWidth);
 
-      Point[] points = Enumerable.ToArray(GetRoomPoints(row, col, roomWidth, roomHeight, direction));
+      Point[] points = GetRoomPoints(row, col, roomWidth, roomHeight, direction).ToArray();
 
       if (points.Any(point => !InBounds(point.Row, point.Col) || _Level.GetPoint(point).Type != TileType.Unused))
       {
@@ -284,8 +284,6 @@ namespace Rogue
     private bool MakeCorridor(int row, int col, int colLength, Direction direction)
     {
       int deltaCol = Randomizer.GetRand(2, colLength);
-
-      int endCol = col + deltaCol;
 
       bool corriderMade = false;
       switch (direction)

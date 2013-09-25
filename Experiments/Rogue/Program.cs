@@ -26,7 +26,9 @@ namespace Rogue
         PrintMap(level);
         ReadInput(level);
       }
+// ReSharper disable FunctionNeverReturns
     }
+// ReSharper restore FunctionNeverReturns
 
     private static void ReadInput(Level level)
     {
