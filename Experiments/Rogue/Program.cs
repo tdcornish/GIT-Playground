@@ -8,12 +8,18 @@ namespace Rogue
     public static int Top = 0;
     public static int Left = 0;
 
+    private const int Objects = 50;
     private const int Width = 75;
     private const int Height = 20;
 
+    private static  MapGenerator _Generator;
+
     public static void Main()
     {
-      var level = new Level(Width, Height);
+      _Generator = new MapGenerator();
+      var level = _Generator.GenerateLevel(Width, Height, Objects);
+      level.SetPlayer();
+
       Console.CursorVisible = false;
       while (true)
       {

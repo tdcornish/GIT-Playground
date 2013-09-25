@@ -8,7 +8,7 @@ namespace Rogue
     {
       Symbol = (char)type;
       Type = type;
-      Visible = false;
+      Visible = true;
       MakeTile(type);
     }
 

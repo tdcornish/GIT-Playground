@@ -2,20 +2,9 @@
 {
   internal class Player
   {
-    public Player(Level level)
+    public Player()
     {
       Symbol = '@';
-
-      CurrentRow = Randomizer.GetRand(1, level.Height);
-      CurrentCol = Randomizer.GetRand(1, level.Width - 1);
-
-      Tile playerStartTile = level.Get(CurrentRow, CurrentCol);
-      while (playerStartTile.Type != TileType.DirtFloor && playerStartTile.Type != TileType.Corrider)
-      {
-        CurrentRow = Randomizer.GetRand(1, level.Height);
-        CurrentCol = Randomizer.GetRand(1, level.Width - 1);
-        playerStartTile = level.Get(CurrentRow, CurrentCol);
-      }
     }
 
     public char Symbol { get; private set; }
