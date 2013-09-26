@@ -14,8 +14,9 @@
       Map = new Tile[Height,Width];
     }
 
-    public void Set(int row, int col, Tile value)
+    public void Set(int row, int col, TileType type)
     {
+      Tile value = new Tile(type);
       Map[row, col] = value;
     }
 
