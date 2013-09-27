@@ -151,7 +151,7 @@ namespace Rogue
 
         var surroundingPoints = GetSurroundingPoints(new Point(row, col));
         int ways =
-          surroundingPoints.Select(point => _Level.GetPoint(point.Item1))
+          surroundingPoints.Select(point => _Level.Get(point.Item1))
                            .Where(tile => tile.Type == TileType.DirtFloor || tile.Type == TileType.Corrider)
                            .Count(tile => tile.Type != TileType.Door);
         if (ways == 4)
@@ -169,7 +169,7 @@ namespace Rogue
 
       Point[] points = GetRoomPoints(row, col, roomWidth, roomHeight, direction).ToArray();
 
-      if (points.Any(point => !InBounds(point.Row, point.Col) || _Level.GetPoint(point).Type != TileType.Unused))
+      if (points.Any(point => !InBounds(point.Row, point.Col) || _Level.Get(point).Type != TileType.Unused))
       {
         return false;
       }

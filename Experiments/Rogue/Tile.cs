@@ -8,14 +8,12 @@ namespace Rogue
     {
       Symbol = (char)type;
       Type = type;
-      Visible = true;
       MakeTile(type);
     }
 
     public char Symbol { get; private set; }
     public bool IsPassable { get; private set; }
     public ConsoleColor Color { get; private set; }
-    public bool Visible { get; set; }
     public TileType Type { get; set; }
 
     private void MakeTile(TileType type)
