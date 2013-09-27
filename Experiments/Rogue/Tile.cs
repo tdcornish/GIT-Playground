@@ -1,9 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Rogue
 {
   internal class Tile
   {
+    public static List<TileType> VisionBlockers = new List<TileType>
+    {
+      TileType.DirtWall, 
+      TileType.ClosedDoor
+    };
+
     public Tile(TileType type)
     {
       Symbol = (char)type;
@@ -32,7 +39,11 @@ namespace Rogue
           IsPassable = true;
           Color = ConsoleColor.White;
           break;
-        case TileType.Door:
+        case TileType.ClosedDoor:
+          IsPassable = false;
+          Color = ConsoleColor.DarkYellow;
+          break;
+        case TileType.OpenDoor:
         case TileType.Upstairs:
         case TileType.Downstairs:
         case TileType.Chest:
@@ -49,7 +60,8 @@ namespace Rogue
     DirtWall = '#',
     DirtFloor = '.',
     Corrider = '.',
-    Door = '/',
+    ClosedDoor = 'D',
+    OpenDoor = '/',
     Upstairs = '>',
     Downstairs = '<',
     Chest = '*'

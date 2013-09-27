@@ -27,6 +27,13 @@
           CurrentRow = newRow;
           CurrentCol = newCol;
         }
+
+        if (nextTile.Type == TileType.ClosedDoor)
+        {
+          CurrentRow = newRow;
+          CurrentCol = newCol;
+          level.Set(newRow, newCol, TileType.OpenDoor);
+        }
       }
     }
   }

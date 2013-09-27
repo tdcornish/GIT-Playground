@@ -93,7 +93,7 @@ namespace Rogue
           }
 
           IEnumerable<Tuple<Point, Direction, Tile>> adjacentPoints = GetSurroundings(new Point(row, col));
-          bool adjacentDoor = adjacentPoints.Any(p => p.Item3.Type == TileType.Door);
+          bool adjacentDoor = adjacentPoints.Any(p => p.Item3.Type == TileType.ClosedDoor);
           if (adjacentDoor)
           {
             directionToBuild = null;
@@ -114,7 +114,7 @@ namespace Rogue
           if (MakeRoom(row + rowMod, col + colMod, 8, 6, directionToBuild.Value))
           {
             currentFeatures++;
-            _Level.Set(row, col, TileType.Door);
+            _Level.Set(row, col, TileType.ClosedDoor);
             _Level.Set(row + rowMod, col + colMod, TileType.DirtFloor);
           }
         }
@@ -123,7 +123,7 @@ namespace Rogue
           if (MakeCorridor(row + rowMod, col + colMod, 6, directionToBuild.Value))
           {
             currentFeatures++;
-            _Level.Set(row, col, TileType.Door);
+            _Level.Set(row, col, TileType.ClosedDoor);
           }
         }
       }
@@ -153,7 +153,7 @@ namespace Rogue
         int ways =
           surroundingPoints.Select(point => _Level.Get(point.Item1))
                            .Where(tile => tile.Type == TileType.DirtFloor || tile.Type == TileType.Corrider)
-                           .Count(tile => tile.Type != TileType.Door);
+                           .Count(tile => tile.Type != TileType.ClosedDoor);
         if (ways == 4)
         {
           _Level.Set(row, col, stair);

@@ -75,10 +75,10 @@ namespace Rogue
       var lineOfSight = Line.GetPointsOnLine(Player.CurrentRow, Player.CurrentCol, row, col).ToArray();
       var orderedLineOfSight = lineOfSight.OrderBy(p => Line.DistanceBetweenPoints(p, new Point(Player.CurrentRow, Player.CurrentCol)));
       
-      Point firstWall = orderedLineOfSight.FirstOrDefault(p => Get(p).Type == TileType.DirtWall);
-      if (firstWall != null)
+      Point firstBlocker = orderedLineOfSight.FirstOrDefault(p => Tile.VisionBlockers.Contains(Get(p).Type));
+      if (firstBlocker != null)
       {
-        Visible[firstWall.Row, firstWall.Col] = true;
+        SetVisible(firstBlocker);
       }
 
       foreach (Point point in orderedLineOfSight)
@@ -90,12 +90,21 @@ namespace Rogue
         }
 
         TileType tileType = Get(point).Type;
-        if (tileType == TileType.DirtWall)
+        if (Tile.VisionBlockers.Contains(tileType))
         {
+          if (tileType == TileType.ClosedDoor)
+          {
+            SetVisible(point);
+          }
           return false;
         }
       }
       return true;
+    }
+
+    private void SetVisible(Point point)
+    {
+      Visible[point.Row, point.Col] = true;
     }
 
     private bool InVisionRadius(Point point)
