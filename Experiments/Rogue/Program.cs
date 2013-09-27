@@ -12,7 +12,7 @@ namespace Rogue
     private const int Width = 75;
     private const int Height = 20;
 
-    private static  MapGenerator _Generator;
+    private static MapGenerator _Generator;
 
     public static void Main()
     {
@@ -23,6 +23,7 @@ namespace Rogue
       Console.CursorVisible = false;
       while (true)
       {
+        level.UpdateVisible();
         PrintMap(level);
         ReadInput(level);
       }
@@ -80,7 +81,8 @@ namespace Rogue
         for (int col = 0; col < Width; col++)
         {
           Tile value = level.Get(row, col);
-          line.Append(value.Visible ? value.Symbol : ' ');
+          line.Append(level.IsVisible(row, col) ? value.Symbol : ' ');
+          //line.Append(value.Symbol);
         }
         line.AppendLine();
       }

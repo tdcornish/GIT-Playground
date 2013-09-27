@@ -5,11 +5,13 @@
     public Player()
     {
       Symbol = '@';
+      VisionRange = 5;
     }
 
     public char Symbol { get; private set; }
     public int CurrentRow { get; set; }
     public int CurrentCol { get; set; }
+    public int VisionRange;
 
     public void Move(Level level, int deltaRow, int deltaCol)
     {

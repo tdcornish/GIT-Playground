@@ -21,6 +21,9 @@ namespace Rogue
       int currentFeatures = 1;
       TryBuildFeatures(currentFeatures);
 
+      AddStairs(TileType.Upstairs);
+      AddStairs(TileType.Downstairs);
+
       return _Level;
     }
 
@@ -111,8 +114,8 @@ namespace Rogue
           if (MakeRoom(row + rowMod, col + colMod, 8, 6, directionToBuild.Value))
           {
             currentFeatures++;
-            _Level.Set(row, col, new Tile(TileType.Door));
-            _Level.Set(row + rowMod, col + colMod, new Tile(TileType.DirtFloor));
+            _Level.Set(row, col, TileType.Door);
+            _Level.Set(row + rowMod, col + colMod, TileType.DirtFloor);
           }
         }
         else if (feature >= RoomChance)
@@ -120,7 +123,7 @@ namespace Rogue
           if (MakeCorridor(row + rowMod, col + colMod, 6, directionToBuild.Value))
           {
             currentFeatures++;
-            _Level.Set(row, col, new Tile(TileType.Door));
+            _Level.Set(row, col, TileType.Door);
           }
         }
       }
@@ -139,6 +142,26 @@ namespace Rogue
       }
     }
 
+    private void AddStairs(TileType stair)
+    {
+      for (int i = 0; i < 1000; i++)
+      {
+        int row = Randomizer.GetRand(1, _Level.Height);
+        int col = Randomizer.GetRand(1, _Level.Width);
+
+        var surroundingPoints = GetSurroundingPoints(new Point(row, col));
+        int ways =
+          surroundingPoints.Select(point => _Level.Get(point.Item1))
+                           .Where(tile => tile.Type == TileType.DirtFloor || tile.Type == TileType.Corrider)
+                           .Count(tile => tile.Type != TileType.Door);
+        if (ways == 4)
+        {
+          _Level.Set(row, col, stair);
+          break;
+        }
+      }
+    }
+
     private bool MakeRoom(int row, int col, int maxWidth, int maxHeight, Direction direction)
     {
       int roomHeight = Randomizer.GetRand(4, maxHeight);
@@ -146,7 +169,7 @@ namespace Rogue
 
       Point[] points = GetRoomPoints(row, col, roomWidth, roomHeight, direction).ToArray();
 
-      if (points.Any(point => !InBounds(point.Row, point.Col) || _Level.GetPoint(point).Type != TileType.Unused))
+      if (points.Any(point => !InBounds(point.Row, point.Col) || _Level.Get(point).Type != TileType.Unused))
       {
         return false;
       }
@@ -154,7 +177,7 @@ namespace Rogue
       foreach (Point point in points)
       {
         bool isWall = IsWall(row, col, roomWidth, roomHeight, point, direction);
-        _Level.Set(point.Row, point.Col, isWall ? new Tile(TileType.DirtWall) : new Tile(TileType.DirtFloor));
+        _Level.Set(point.Row, point.Col, isWall ? TileType.DirtWall : TileType.DirtFloor);
       }
       return true;
     }
@@ -330,7 +353,7 @@ namespace Rogue
 
       for (int colTemp = col; colTemp > endCol; colTemp--)
       {
-        _Level.Set(row, colTemp, new Tile(TileType.Corrider));
+        _Level.Set(row, colTemp, TileType.Corrider);
       }
       return true;
     }
@@ -355,7 +378,7 @@ namespace Rogue
 
       for (int rowTemp = row; rowTemp < endRow; rowTemp++)
       {
-        _Level.Set(rowTemp, col, new Tile(TileType.Corrider));
+        _Level.Set(rowTemp, col, TileType.Corrider);
       }
       return true;
     }
@@ -380,7 +403,7 @@ namespace Rogue
 
       for (int colTemp = col; colTemp < endCol; colTemp++)
       {
-        _Level.Set(row, colTemp, new Tile(TileType.Corrider));
+        _Level.Set(row, colTemp, TileType.Corrider);
       }
       return true;
     }
@@ -405,7 +428,7 @@ namespace Rogue
 
       for (int rowTemp = row; rowTemp > endRow; rowTemp--)
       {
-        _Level.Set(rowTemp, col, new Tile(TileType.Corrider));
+        _Level.Set(rowTemp, col, TileType.Corrider);
       }
       return true;
     }
