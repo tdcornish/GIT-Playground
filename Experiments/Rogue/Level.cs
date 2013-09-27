@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 
 namespace Rogue
 {
@@ -54,26 +53,11 @@ namespace Rogue
       int endRow = Player.CurrentRow + Player.VisionRange;
       int endCol = Player.CurrentCol + Player.VisionRange;
 
-      if (startRow < 0)
-      {
-        startRow = 0;
-      }
+      startRow = startRow < 0 ? 0 : startRow;
+      endRow = endRow >= Height ? Height - 1 : endRow;
+      startCol = startCol < 0 ? 0 : startCol;
+      endCol = endCol >= Width ? Width - 1 : endCol;
 
-      if (endRow >= Height)
-      {
-        endRow = Height - 1;
-      }
-
-      if (startCol < 0)
-      {
-        startCol = 0;
-      }
-
-      if (endCol >= Width)
-      {
-        endCol = Width - 1;
-      }
-      
       for (int row = startRow; row < endRow; row++)
       {
         for (int col = startCol; col < endCol; col++)
@@ -89,16 +73,18 @@ namespace Rogue
     private bool CanSee(int row, int col)
     {
       var lineOfSight = Line.GetPointsOnLine(Player.CurrentRow, Player.CurrentCol, row, col).ToArray();
-      foreach (Point point in lineOfSight)
+      var orderedLineOfSight = lineOfSight.OrderBy(p => Line.DistanceBetweenPoints(p, new Point(Player.CurrentRow, Player.CurrentCol)));
+      
+      Point firstWall = orderedLineOfSight.FirstOrDefault(p => Get(p).Type == TileType.DirtWall);
+      if (firstWall != null)
       {
-        Point firstWall = lineOfSight.FirstOrDefault(p => Get(p).Type == TileType.DirtWall);
-        if (firstWall != null)
-        {
-          Visible[firstWall.Row, firstWall.Col] = true;
-        }
+        Visible[firstWall.Row, firstWall.Col] = true;
+      }
 
+      foreach (Point point in orderedLineOfSight)
+      {
         bool inVisionRadius = InVisionRadius(point);
-        if(!inVisionRadius)
+        if (!inVisionRadius)
         {
           return false;
         }
@@ -114,9 +100,7 @@ namespace Rogue
 
     private bool InVisionRadius(Point point)
     {
-      double a = (double)(point.Row - Player.CurrentRow);
-      double b = (double)(point.Col - Player.CurrentCol);
-      double distance = Math.Sqrt(a * a + b * b);
+      double distance = Line.DistanceBetweenPoints(point, new Point(Player.CurrentRow, Player.CurrentCol));
       return distance <= Player.VisionRange;
     }
 

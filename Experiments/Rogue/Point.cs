@@ -18,6 +18,13 @@ namespace Rogue
 
   class Line
   {
+    public static double DistanceBetweenPoints(Point p1, Point p2)
+    {
+      double a = (double)(p1.Row - p2.Row);
+      double b = (double)(p1.Col - p2.Col);
+      return Math.Sqrt(a * a + b * b);
+    }
+
     public static IEnumerable<Point> GetPointsOnLine(int x0, int y0, int x1, int y1)
     {
       bool steep = Math.Abs(y1 - y0) > Math.Abs(x1 - x0);
