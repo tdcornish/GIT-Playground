@@ -1,6 +1,11 @@
 ﻿using System;
 using System.Text;
 
+using SFML;
+using SFML.Graphics;
+using SFML.Window;
+using SFML.Audio;
+
 namespace Rogue
 {
   internal class Program
@@ -13,23 +18,23 @@ namespace Rogue
     private const int Height = 20;
 
     private static MapGenerator _Generator;
-
+   
+ 
     public static void Main()
     {
-      _Generator = new MapGenerator();
-      var level = _Generator.GenerateLevel(Width, Height, Objects);
-      level.SetPlayer();
+      SFMLWindow.Display();
+      //_Generator = new MapGenerator();
+      //var level = _Generator.GenerateLevel(Width, Height, Objects);
+      //level.SetPlayer();
 
-      Console.CursorVisible = false;
-      while (true)
-      {
-        level.UpdateVisible();
-        PrintMap(level);
-        ReadInput(level);
-      }
-// ReSharper disable FunctionNeverReturns
+      //Console.CursorVisible = false;
+      //while (true)
+      //{
+      //  level.UpdateVisible();
+      //  PrintMap(level);
+      //  ReadInput(level);
+      //}
     }
-// ReSharper restore FunctionNeverReturns
 
     private static void ReadInput(Level level)
     {
