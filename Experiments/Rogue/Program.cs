@@ -14,7 +14,7 @@ namespace Rogue
     public static int Left = 0;
 
     private const int Objects = 50;
-    private const int Width = 75;
+    private const int Width = 40;
     private const int Height = 20;
 
     private static MapGenerator _Generator;

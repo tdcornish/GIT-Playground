@@ -117,14 +117,14 @@ namespace Rogue
     {
       Player = new Player
       {
-        CurrentRow = Randomizer.GetRand(1, Height),
+        CurrentRow = Randomizer.GetRand(1, Height -1),
         CurrentCol = Randomizer.GetRand(1, Width - 1)
       };
 
       Tile playerStartTile = Get(Player.CurrentRow, Player.CurrentCol);
       while (playerStartTile.Type != TileType.DirtFloor && playerStartTile.Type != TileType.Corrider)
       {
-        Player.CurrentRow = Randomizer.GetRand(1, Height);
+        Player.CurrentRow = Randomizer.GetRand(1, Height - 1);
         Player.CurrentCol = Randomizer.GetRand(1, Width - 1);
         playerStartTile = Get(Player.CurrentRow, Player.CurrentCol);
       }
