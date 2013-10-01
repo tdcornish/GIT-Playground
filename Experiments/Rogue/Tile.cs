@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using SFML.Graphics;
 
 namespace Rogue
 {
@@ -20,7 +21,7 @@ namespace Rogue
 
     public char Symbol { get; private set; }
     public bool IsPassable { get; private set; }
-    public ConsoleColor Color { get; private set; }
+    public Color Color { get; private set; }
     public TileType Type { get; set; }
 
     private void MakeTile(TileType type)
@@ -29,26 +30,26 @@ namespace Rogue
       {
         case TileType.Unused:
           IsPassable = false;
-          Color = ConsoleColor.Black;
+          Color = Color.Black;
           break;
         case TileType.DirtWall:
           IsPassable = false;
-          Color = ConsoleColor.White;
+          Color = Color.White;
           break;
         case TileType.DirtFloor:   //Corrider as well, can't have two a different case becaues they have the same label
           IsPassable = true;
-          Color = ConsoleColor.White;
+          Color = Color.White;
           break;
         case TileType.ClosedDoor:
           IsPassable = false;
-          Color = ConsoleColor.DarkYellow;
+          Color = Color.Yellow;
           break;
         case TileType.OpenDoor:
         case TileType.Upstairs:
         case TileType.Downstairs:
         case TileType.Chest:
           IsPassable = true;
-          Color = ConsoleColor.DarkYellow;
+          Color = Color.Yellow;
           break;
       }
     }

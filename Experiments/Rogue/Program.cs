@@ -18,14 +18,23 @@ namespace Rogue
     private const int Height = 20;
 
     private static MapGenerator _Generator;
-   
  
     public static void Main()
     {
-      SFMLWindow.Display();
-      //_Generator = new MapGenerator();
-      //var level = _Generator.GenerateLevel(Width, Height, Objects);
-      //level.SetPlayer();
+      _Generator = new MapGenerator();
+      var level = _Generator.GenerateLevel(Width, Height, Objects);
+      level.SetPlayer();
+      level.UpdateVisible();
+
+      RogueWindow window = new RogueWindow(level);
+      //window.Display();
+      while (window.IsOpen())
+      {
+        window.DispatchEvents();
+       // ReadInput(level);
+       // level.UpdateVisible();
+       window.Display();
+      }
 
       //Console.CursorVisible = false;
       //while (true)
