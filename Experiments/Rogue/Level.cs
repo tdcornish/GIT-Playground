@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-namespace Rogue
+﻿namespace Rogue
 {
   internal class Level
   {
@@ -8,7 +6,6 @@ namespace Rogue
     public int Width;
     public Tile[,] Map;
     public bool[,] Visible;
-    public Player Player;
 
     public Level(int width, int height)
     {
@@ -46,12 +43,12 @@ namespace Rogue
       return Visible[row, col];
     }
 
-    public void UpdateVisible()
+    public void UpdateVisible(Player player)
     {
-      int startRow = Player.CurrentRow - Player.VisionRange;
-      int startCol = Player.CurrentCol - Player.VisionRange;
-      int endRow = Player.CurrentRow + Player.VisionRange;
-      int endCol = Player.CurrentCol + Player.VisionRange;
+      int startRow = player.CurrentRow - player.VisionRange;
+      int startCol = player.CurrentCol - player.VisionRange;
+      int endRow = player.CurrentRow + player.VisionRange;
+      int endCol = player.CurrentCol + player.VisionRange;
 
       startRow = startRow < 0 ? 0 : startRow;
       endRow = endRow >= Height ? Height - 1 : endRow;
@@ -62,7 +59,7 @@ namespace Rogue
       {
         for (int col = startCol; col < endCol; col++)
         {
-          if (CanSee(row, col))
+          if (player.CanSee(row, col))
           {
             Visible[row, col] = true;
           }
@@ -70,95 +67,35 @@ namespace Rogue
       }
     }
 
-    private bool CanSee(int row, int col)
-    {
-      var lineOfSight = Line.GetPointsOnLine(Player.CurrentRow, Player.CurrentCol, row, col).ToArray();
-      var orderedLineOfSight = lineOfSight.OrderBy(p => Line.DistanceBetweenPoints(p, new Point(Player.CurrentRow, Player.CurrentCol)));
-      
-      Point firstBlocker = orderedLineOfSight.FirstOrDefault(p => Tile.VisionBlockers.Contains(Get(p).Type));
-      if (firstBlocker != null)
-      {
-        SetVisible(firstBlocker);
-      }
-
-      foreach (Point point in orderedLineOfSight)
-      {
-        bool inVisionRadius = InVisionRadius(point);
-        if (!inVisionRadius)
-        {
-          return false;
-        }
-
-        TileType tileType = Get(point).Type;
-        if (Tile.VisionBlockers.Contains(tileType))
-        {
-          if (tileType == TileType.ClosedDoor)
-          {
-            SetVisible(point);
-          }
-          return false;
-        }
-      }
-      return true;
-    }
-
-    private void SetVisible(Point point)
-    {
-      Visible[point.Row, point.Col] = true;
-    }
-
-    private bool InVisionRadius(Point point)
-    {
-      double distance = Line.DistanceBetweenPoints(point, new Point(Player.CurrentRow, Player.CurrentCol));
-      return distance <= Player.VisionRange;
-    }
-
-    public void SetPlayer()
-    {
-      Player = new Player
-      {
-        CurrentRow = Randomizer.GetRand(1, Height -1),
-        CurrentCol = Randomizer.GetRand(1, Width - 1)
-      };
-
-      Tile playerStartTile = Get(Player.CurrentRow, Player.CurrentCol);
-      while (playerStartTile.Type != TileType.DirtFloor && playerStartTile.Type != TileType.Corrider)
-      {
-        Player.CurrentRow = Randomizer.GetRand(1, Height - 1);
-        Player.CurrentCol = Randomizer.GetRand(1, Width - 1);
-        playerStartTile = Get(Player.CurrentRow, Player.CurrentCol);
-      }
-    }
-
-    public void MovePlayer(Direction direction)
-    {
-      switch (direction)
-      {
-        case Direction.North:
-          Player.Move(this, -1, 0);
-          break;
-        case Direction.South:
-          Player.Move(this, 1, 0);
-          break;
-        case Direction.West:
-          Player.Move(this, 0, -1);
-          break;
-        case Direction.East:
-          Player.Move(this, 0, 1);
-          break;
-        case Direction.Northeast:
-          Player.Move(this, -1, 1);
-          break;
-        case Direction.Southeast:
-          Player.Move(this, 1, 1);
-          break;
-        case Direction.Northwest:
-          Player.Move(this, -1, -1);
-          break;
-        case Direction.Southwest:
-          Player.Move(this, 1, -1);
-          break;
-      }
-    }
+    //public void MovePlayer(Direction direction)
+    //{
+    //  switch (direction)
+    //  {
+    //    case Direction.North:
+    //      Player.Move(this, -1, 0);
+    //      break;
+    //    case Direction.South:
+    //      Player.Move(this, 1, 0);
+    //      break;
+    //    case Direction.West:
+    //      Player.Move(this, 0, -1);
+    //      break;
+    //    case Direction.East:
+    //      Player.Move(this, 0, 1);
+    //      break;
+    //    case Direction.Northeast:
+    //      Player.Move(this, -1, 1);
+    //      break;
+    //    case Direction.Southeast:
+    //      Player.Move(this, 1, 1);
+    //      break;
+    //    case Direction.Northwest:
+    //      Player.Move(this, -1, -1);
+    //      break;
+    //    case Direction.Southwest:
+    //      Player.Move(this, 1, -1);
+    //      break;
+    //  }
+    //}
   }
 }

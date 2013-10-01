@@ -1,58 +1,50 @@
 ﻿using System;
 using System.Text;
-
-using SFML;
-using SFML.Graphics;
 using SFML.Window;
-using SFML.Audio;
 
 namespace Rogue
 {
   internal class Program
   {
+    private const int Objects = 50;
+    private const int Width = 60;
+    private const int Height = 20;
     public static int Top = 0;
     public static int Left = 0;
 
-    private const int Objects = 50;
-    private const int Width = 40;
-    private const int Height = 20;
+    private static MapGenerator Generator;
+    private static Level[] Dungeon;
+    private static Level CurrentLevel;
+    private static Player MainCharacter;
 
-    private static MapGenerator _Generator;
- 
     public static void Main()
     {
-      _Generator = new MapGenerator();
-      var level = _Generator.GenerateLevel(Width, Height, Objects);
-      level.SetPlayer();
-      level.UpdateVisible();
+      Generator = new MapGenerator();
+      Dungeon = new Level[20];
+      for (int i = 0; i < Dungeon.Length; i++)
+      {
+        Dungeon[i] = Generator.GenerateLevel(Width, Height, Objects);
+      }
+      CurrentLevel = Dungeon[0];
 
-      RogueWindow window = new RogueWindow(level);
-      //window.Display();
+      MainCharacter = new Player(CurrentLevel);
+      CurrentLevel.UpdateVisible(MainCharacter);
+
+      var window = new RogueWindow(CurrentLevel);
       while (window.IsOpen())
       {
         window.DispatchEvents();
-       // ReadInput(level);
-       // level.UpdateVisible();
-       window.Display();
+        CurrentLevel.UpdateVisible(MainCharacter);
+        window.Display();
       }
-
-      //Console.CursorVisible = false;
-      //while (true)
-      //{
-      //  level.UpdateVisible();
-      //  PrintMap(level);
-      //  ReadInput(level);
-      //}
     }
 
-    private static void ReadInput(Level level)
+    public static void ParseInput(Keyboard.Key key)
     {
-      ConsoleKeyInfo keyPressed = Console.ReadKey();
-      switch (keyPressed.Key)
+      switch (key)
       {
-        case ConsoleKey.D4:
-        case ConsoleKey.LeftArrow:
-          level.MovePlayer(Direction.West);
+        case Keyboard.Key.Left:
+          MainCharacter.Move(Direction.West);
           break;
         case ConsoleKey.D6:
         case ConsoleKey.RightArrow:
@@ -85,32 +77,31 @@ namespace Rogue
       }
     }
 
-    public static void PrintMap(Level level)
-    {
-      StringBuilder line = new StringBuilder();
-      Console.ForegroundColor = ConsoleColor.White;
-      for (int row = 0; row < Height; row++)
-      {
+    //public static void PrintMap(Level level)
+    //{
+    //  var line = new StringBuilder();
+    //  Console.ForegroundColor = ConsoleColor.White;
+    //  for (int row = 0; row < Height; row++)
+    //  {
+    //    for (int col = 0; col < Width; col++)
+    //    {
+    //      Tile value = level.Get(row, col);
+    //      line.Append(level.IsVisible(row, col) ? value.Symbol : ' ');
+    //      //line.Append(value.Symbol);
+    //    }
+    //    line.AppendLine();
+    //  }
 
-        for (int col = 0; col < Width; col++)
-        {
-          Tile value = level.Get(row, col);
-          line.Append(level.IsVisible(row, col) ? value.Symbol : ' ');
-          //line.Append(value.Symbol);
-        }
-        line.AppendLine();
-      }
+    //  Console.SetCursorPosition(Left, Top);
+    //  Console.WriteLine(line);
+    //  PrintPlayer(level.Player);
+    //}
 
-      Console.SetCursorPosition(Left, Top);
-      Console.WriteLine(line);
-      PrintPlayer(level.Player);
-    }
-
-    public static void PrintPlayer(Player player)
-    {
-      Console.ForegroundColor = ConsoleColor.Red;
-      Console.SetCursorPosition(Left + player.CurrentCol, Top + player.CurrentRow);
-      Console.Write(player.Symbol);
-    }
+    //public static void PrintPlayer(Player player)
+    //{
+    //  Console.ForegroundColor = ConsoleColor.Red;
+    //  Console.SetCursorPosition(Left + player.CurrentCol, Top + player.CurrentRow);
+    //  Console.Write(player.Symbol);
+    //}
   }
 }

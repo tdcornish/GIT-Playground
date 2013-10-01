@@ -77,13 +77,12 @@ namespace Rogue
       Window.Clear();
       UpdateSpriteMap();
       DrawLevel();
-      //DrawPlayer();
+      DrawPlayer();
       Window.Display();
     }
 
     private void DrawPlayer()
     {
-      throw new NotImplementedException();
     }
 
     private void DrawLevel()
@@ -116,6 +115,9 @@ namespace Rogue
       if (e.Code == Keyboard.Key.Escape)
       {
         window.Close();
+      }
+      else
+      {
       }
     }
   }
