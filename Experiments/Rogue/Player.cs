@@ -33,6 +33,37 @@ namespace Rogue
       }
     }
 
+    public void Move(Direction direction)
+    {
+      switch (direction)
+      {
+        case Direction.North:
+          Move(-1, 0);
+          break;
+        case Direction.South:
+          Move(1, 0);
+          break;
+        case Direction.West:
+          Move(0, -1);
+          break;
+        case Direction.East:
+          Move(0, 1);
+          break;
+        case Direction.Northeast:
+          Move(-1, 1);
+          break;
+        case Direction.Southeast:
+          Move(1, 1);
+          break;
+        case Direction.Northwest:
+          Move(-1, -1);
+          break;
+        case Direction.Southwest:
+          Move(1, -1);
+          break;
+      }
+    }
+
     public void Move(int deltaRow, int deltaCol)
     {
       int newRow = CurrentRow + deltaRow;

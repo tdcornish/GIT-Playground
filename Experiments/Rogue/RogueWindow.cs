@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using SFML.Graphics;
 using SFML.Window;
 
@@ -8,19 +7,22 @@ namespace Rogue
   internal class RogueWindow
   {
     private Level Level;
+    private Player Player;
     private int MapHeight;
     private int MapWidth;
 
+    private Sprite PlayerSprite;
     private Sprite[,] SpriteMap;
     private Texture TileSet;
     private int TileSize = 12;
     private RenderWindow Window;
 
-    public RogueWindow(Level level)
+    public RogueWindow(Level level, Player player)
     {
       Level = level;
+      Player = player;
 
-      Window = new RenderWindow(new VideoMode(680, 460), "SFML window", Styles.Close);
+      Window = new RenderWindow(new VideoMode(724, 360), "SFML window", Styles.Close);
       Window.SetActive();
       Window.Closed += OnClosed;
       Window.KeyPressed += OnKeyPressed;
@@ -30,6 +32,22 @@ namespace Rogue
 
       TileSet = new Texture("Textures/tileset.png");
       InitializeSpriteMap();
+
+      PlayerSprite = new Sprite(TileSet)
+      {
+        TextureRect = GetTextureRect(SpriteCoordinates.Player),
+        Position = new Vector2f(player.CurrentCol * TileSize, player.CurrentRow * TileSize)
+      };
+    }
+
+    public void Display()
+    {
+      Window.Clear();
+      UpdateSpriteMap();
+      UpdatePlayerSprite();
+      DrawLevel();
+      DrawPlayer();
+      Window.Display();
     }
 
     private IntRect GetTextureRect(Vector2f location)
@@ -67,22 +85,19 @@ namespace Rogue
       }
     }
 
+    private void UpdatePlayerSprite()
+    {
+      PlayerSprite.Position = new Vector2f(Player.CurrentCol * TileSize, Player.CurrentRow * TileSize);
+    }
+
     private void UpdateSprite(int spriteRow, int spriteCol, Vector2f location)
     {
       SpriteMap[spriteRow, spriteCol].TextureRect = GetTextureRect(location);
     }
 
-    public void Display()
-    {
-      Window.Clear();
-      UpdateSpriteMap();
-      DrawLevel();
-      DrawPlayer();
-      Window.Display();
-    }
-
     private void DrawPlayer()
     {
+      Window.Draw(PlayerSprite);
     }
 
     private void DrawLevel()
@@ -118,6 +133,7 @@ namespace Rogue
       }
       else
       {
+        Program.ParseInput(e.Code);
       }
     }
   }

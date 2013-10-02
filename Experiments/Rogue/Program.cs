@@ -30,7 +30,7 @@ namespace Rogue
       MainCharacter = new Player(CurrentLevel);
       CurrentLevel.UpdateVisible(MainCharacter);
 
-      var window = new RogueWindow(CurrentLevel);
+      var window = new RogueWindow(CurrentLevel, MainCharacter);
       while (window.IsOpen())
       {
         window.DispatchEvents();
@@ -46,33 +46,26 @@ namespace Rogue
         case Keyboard.Key.Left:
           MainCharacter.Move(Direction.West);
           break;
-        case ConsoleKey.D6:
-        case ConsoleKey.RightArrow:
-          level.MovePlayer(Direction.East);
+        case Keyboard.Key.Right:
+          MainCharacter.Move(Direction.East);
           break;
-        case ConsoleKey.D2:
-        case ConsoleKey.DownArrow:
-          level.MovePlayer(Direction.South);
+        case Keyboard.Key.Down:
+          MainCharacter.Move(Direction.South);
           break;
-        case ConsoleKey.D8:
-        case ConsoleKey.UpArrow:
-          level.MovePlayer(Direction.North);
+        case Keyboard.Key.Up:
+          MainCharacter.Move(Direction.North);
           break;
-        case ConsoleKey.D9:
-        case ConsoleKey.PageUp:
-          level.MovePlayer(Direction.Northeast);
+        case Keyboard.Key.PageUp:
+          MainCharacter.Move(Direction.Northeast);
           break;
-        case ConsoleKey.D3:
-        case ConsoleKey.PageDown:
-          level.MovePlayer(Direction.Southeast);
+        case Keyboard.Key.PageDown:
+          MainCharacter.Move(Direction.Southeast);
           break;
-        case ConsoleKey.D7:
-        case ConsoleKey.Home:
-          level.MovePlayer(Direction.Northwest);
+        case Keyboard.Key.Home:
+          MainCharacter.Move(Direction.Northwest);
           break;
-        case ConsoleKey.D1:
-        case ConsoleKey.End:
-          level.MovePlayer(Direction.Southwest);
+        case Keyboard.Key.End:
+          MainCharacter.Move(Direction.Southwest);
           break;
       }
     }

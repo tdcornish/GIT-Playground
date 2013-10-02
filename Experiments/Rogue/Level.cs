@@ -66,36 +66,5 @@
         }
       }
     }
-
-    //public void MovePlayer(Direction direction)
-    //{
-    //  switch (direction)
-    //  {
-    //    case Direction.North:
-    //      Player.Move(this, -1, 0);
-    //      break;
-    //    case Direction.South:
-    //      Player.Move(this, 1, 0);
-    //      break;
-    //    case Direction.West:
-    //      Player.Move(this, 0, -1);
-    //      break;
-    //    case Direction.East:
-    //      Player.Move(this, 0, 1);
-    //      break;
-    //    case Direction.Northeast:
-    //      Player.Move(this, -1, 1);
-    //      break;
-    //    case Direction.Southeast:
-    //      Player.Move(this, 1, 1);
-    //      break;
-    //    case Direction.Northwest:
-    //      Player.Move(this, -1, -1);
-    //      break;
-    //    case Direction.Southwest:
-    //      Player.Move(this, 1, -1);
-    //      break;
-    //  }
-    //}
   }
 }
