@@ -81,10 +81,10 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Randomizer.cs" />
-    <Compile Include="RogueWindow.cs" />
-    <Compile Include="SpriteCoordinates.cs" />
+    <Compile Include="Graphics Stuff\RogueWindow.cs" />
+    <Compile Include="Graphics Stuff\SpriteCoordinates.cs" />
     <Compile Include="Tile.cs" />
-    <Compile Include="VisibleSprite.cs" />
+    <Compile Include="Graphics Stuff\VisibleSprite.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
