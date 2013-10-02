@@ -6,15 +6,17 @@ namespace Rogue
 {
   internal class RogueWindow
   {
-    private Level Level;
-    private Player Player;
+    public bool VisionEnabled = true;
+    public const int TileSize = 12;
+
+    private static Level Level;
+    private static Player Player;
+    private static VisibleSprite[,] SpriteMap;
     private int MapHeight;
     private int MapWidth;
 
     private Sprite PlayerSprite;
-    private Sprite[,] SpriteMap;
     private Texture TileSet;
-    private int TileSize = 12;
     private RenderWindow Window;
 
     public RogueWindow(Level level, Player player)
@@ -22,7 +24,7 @@ namespace Rogue
       Level = level;
       Player = player;
 
-      Window = new RenderWindow(new VideoMode(724, 360), "SFML window", Styles.Close);
+      Window = new RenderWindow(new VideoMode(724, 480), "SFML window", Styles.Close);
       Window.SetActive();
       Window.Closed += OnClosed;
       Window.KeyPressed += OnKeyPressed;
@@ -35,6 +37,7 @@ namespace Rogue
 
       PlayerSprite = new Sprite(TileSet)
       {
+        Color = Player.Color,
         TextureRect = GetTextureRect(SpriteCoordinates.Player),
         Position = new Vector2f(player.CurrentCol * TileSize, player.CurrentRow * TileSize)
       };
@@ -54,21 +57,20 @@ namespace Rogue
     {
       int row = (int)location.X * TileSize;
       int col = (int)location.Y * TileSize;
-      return new IntRect(row, col, TileSize, TileSize); 
+      return new IntRect(row, col, TileSize, TileSize);
     }
 
     private void InitializeSpriteMap()
     {
-      SpriteMap = new Sprite[MapHeight,MapWidth];
+      SpriteMap = new VisibleSprite[MapHeight,MapWidth];
       for (int row = 0; row < MapHeight; row++)
       {
         for (int col = 0; col < MapWidth; col++)
         {
-          SpriteMap[row, col] = new Sprite(TileSet)
-          {
-            TextureRect = GetTextureRect(SpriteCoordinates.Unused),
-            Position = new Vector2f(col * TileSize, row * TileSize)
-          };
+          var sprite = new VisibleSprite(TileSet, false);
+          sprite.SetTextureRect(GetTextureRect(SpriteCoordinates.Unused));
+          sprite.SetPosition(col, row);
+          SpriteMap[row, col] = sprite;
         }
       }
     }
@@ -79,20 +81,26 @@ namespace Rogue
       {
         for (int col = 0; col < MapWidth; col++)
         {
-          TileType type = Level.Get(row, col).Type;
-          UpdateSprite(row, col, SpriteCoordinates.GetTextureCoordinates(type));
+          Tile tile = Level.Get(row, col);
+          UpdateSprite(row, col, tile, Level.Visible[row, col]);
         }
       }
     }
 
     private void UpdatePlayerSprite()
     {
-      PlayerSprite.Position = new Vector2f(Player.CurrentCol * TileSize, Player.CurrentRow * TileSize);
+      int x = Player.CurrentCol * TileSize;
+      int y = Player.CurrentRow * TileSize;
+      PlayerSprite.Position = new Vector2f(x, y);
     }
 
-    private void UpdateSprite(int spriteRow, int spriteCol, Vector2f location)
+    private void UpdateSprite(int spriteRow, int spriteCol, Tile tile, bool visible)
     {
-      SpriteMap[spriteRow, spriteCol].TextureRect = GetTextureRect(location);
+      VisibleSprite toUpdate = SpriteMap[spriteRow, spriteCol];
+      Vector2f location = SpriteCoordinates.GetTileTypeTextureCoordinates(tile.Type);
+      toUpdate.SetTextureRect(GetTextureRect(location));
+      toUpdate.Sprite.Color = tile.Color;
+      toUpdate.Visible = visible;
     }
 
     private void DrawPlayer()
@@ -102,9 +110,17 @@ namespace Rogue
 
     private void DrawLevel()
     {
-      foreach (Sprite sprite in SpriteMap)
+      foreach (VisibleSprite sprite in SpriteMap)
       {
-        Window.Draw(sprite);
+        if (sprite.Visible && VisionEnabled)
+        {
+          Window.Draw(sprite.Sprite);
+        }
+
+        else if(!VisionEnabled)
+        {
+          Window.Draw(sprite.Sprite);
+        }
       }
     }
 

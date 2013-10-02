@@ -8,7 +8,7 @@ namespace Rogue
   {
     private const int Objects = 50;
     private const int Width = 60;
-    private const int Height = 20;
+    private const int Height = 40;
     public static int Top = 0;
     public static int Left = 0;
 

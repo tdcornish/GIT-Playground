@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using SFML.Graphics;
 
 namespace Rogue
 {
@@ -9,12 +10,14 @@ namespace Rogue
     public int CurrentRow;
     public char Symbol;
     public int VisionRange;
+    public Color Color;
 
     public Player(Level startLevel)
     {
       CurrentLevel = startLevel;
       Symbol = '@';
       VisionRange = 5;
+      Color = new Color(Color.Red);
 
       SetStartingPosition();
     }
