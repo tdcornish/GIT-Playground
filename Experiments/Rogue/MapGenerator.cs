@@ -21,8 +21,8 @@ namespace Rogue
       int currentFeatures = 1;
       TryBuildFeatures(currentFeatures);
 
-      AddStairs(TileType.Upstairs);
-      AddStairs(TileType.Downstairs);
+      Level.UpstairsLocation = AddStairs(TileType.Upstairs);
+      Level.DownstairsLocation = AddStairs(TileType.Downstairs);
 
       return Level;
     }
@@ -142,7 +142,7 @@ namespace Rogue
       }
     }
 
-    private void AddStairs(TileType stair)
+    private Point AddStairs(TileType stair)
     {
       for (int i = 0; i < 1000; i++)
       {
@@ -157,9 +157,11 @@ namespace Rogue
         if (ways == 4)
         {
           Level.Set(row, col, stair);
-          break;
+          return new Point(row, col); 
         }
       }
+
+      return new Point(0,0);
     }
 
     private bool MakeRoom(int row, int col, int maxWidth, int maxHeight, Direction direction)

@@ -9,6 +9,8 @@
     Northeast,
     Southeast,
     Northwest,
-    Southwest
+    Southwest,
+    Up,
+    Down
   }
 }

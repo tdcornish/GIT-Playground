@@ -6,6 +6,8 @@ namespace Rogue
 {
   internal class Tile
   {
+    Color DoorColor = new Color(135, 30, 30);
+
     public static List<TileType> VisionBlockers = new List<TileType>
     {
       TileType.DirtWall, 
@@ -42,12 +44,14 @@ namespace Rogue
           break;
         case TileType.ClosedDoor:
           IsPassable = false;
-          Color = Color.Yellow;
+          Color = DoorColor;
           break;
         case TileType.OpenDoor:
+          IsPassable = true;
+          Color = DoorColor;
+          break;
         case TileType.Upstairs:
         case TileType.Downstairs:
-        case TileType.Chest:
           IsPassable = true;
           Color = Color.Yellow;
           break;
@@ -61,10 +65,9 @@ namespace Rogue
     DirtWall = '#',
     DirtFloor = '.',
     Corrider = '.',
-    ClosedDoor = 'D',
+    ClosedDoor = '+',
     OpenDoor = '/',
-    Upstairs = '>',
-    Downstairs = '<',
-    Chest = '*'
+    Upstairs = '<',
+    Downstairs = '>',
   }
 }

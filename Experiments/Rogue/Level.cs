@@ -7,6 +7,9 @@
     public Tile[,] Map;
     public bool[,] Visible;
 
+    public Point UpstairsLocation;
+    public Point DownstairsLocation;
+
     public Level(int width, int height)
     {
       Width = width;

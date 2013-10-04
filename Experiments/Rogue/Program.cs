@@ -1,6 +1,4 @@
-﻿using System;
-using System.Text;
-using SFML.Window;
+﻿using SFML.Window;
 
 namespace Rogue
 {
@@ -14,7 +12,7 @@ namespace Rogue
 
     private static MapGenerator Generator;
     private static Level[] Dungeon;
-    private static Level CurrentLevel;
+    private static int CurrentLevelNumber;
     private static Player MainCharacter;
 
     public static void Main()
@@ -25,16 +23,15 @@ namespace Rogue
       {
         Dungeon[i] = Generator.GenerateLevel(Width, Height, Objects);
       }
-      CurrentLevel = Dungeon[0];
+      CurrentLevelNumber = 0;
+      MainCharacter = new Player( Dungeon[CurrentLevelNumber]);
+      MainCharacter.CurrentLevel.UpdateVisible(MainCharacter);
 
-      MainCharacter = new Player(CurrentLevel);
-      CurrentLevel.UpdateVisible(MainCharacter);
-
-      var window = new RogueWindow(CurrentLevel, MainCharacter);
+      var window = new RogueWindow(MainCharacter.CurrentLevel, MainCharacter);
       while (window.IsOpen())
       {
         window.DispatchEvents();
-        CurrentLevel.UpdateVisible(MainCharacter);
+        MainCharacter.CurrentLevel.UpdateVisible(MainCharacter);
         window.Display();
       }
     }
@@ -67,34 +64,42 @@ namespace Rogue
         case Keyboard.Key.End:
           MainCharacter.Move(Direction.Southwest);
           break;
+        case Keyboard.Key.Space:
+          TileType playerCurrentTile =
+            MainCharacter.CurrentLevel.Get(MainCharacter.CurrentRow, MainCharacter.CurrentCol)
+                        .Type;
+          switch (playerCurrentTile)
+          {
+            case TileType.Upstairs:
+              ChangeLevel(Direction.Up);
+              break;
+            case TileType.Downstairs:
+              ChangeLevel(Direction.Down);
+              break;
+          }
+          break;
       }
     }
 
-    //public static void PrintMap(Level level)
-    //{
-    //  var line = new StringBuilder();
-    //  Console.ForegroundColor = ConsoleColor.White;
-    //  for (int row = 0; row < Height; row++)
-    //  {
-    //    for (int col = 0; col < Width; col++)
-    //    {
-    //      Tile value = level.Get(row, col);
-    //      line.Append(level.IsVisible(row, col) ? value.Symbol : ' ');
-    //      //line.Append(value.Symbol);
-    //    }
-    //    line.AppendLine();
-    //  }
-
-    //  Console.SetCursorPosition(Left, Top);
-    //  Console.WriteLine(line);
-    //  PrintPlayer(level.Player);
-    //}
-
-    //public static void PrintPlayer(Player player)
-    //{
-    //  Console.ForegroundColor = ConsoleColor.Red;
-    //  Console.SetCursorPosition(Left + player.CurrentCol, Top + player.CurrentRow);
-    //  Console.Write(player.Symbol);
-    //}
+    private static void ChangeLevel(Direction direction)
+    {
+      switch (direction)
+      {
+        case Direction.Up:
+          MainCharacter.CurrentLevel = Dungeon[--CurrentLevelNumber];
+          MainCharacter.CurrentRow =
+            MainCharacter.CurrentLevel.DownstairsLocation.Row;
+          MainCharacter.CurrentCol =
+            MainCharacter.CurrentLevel.DownstairsLocation.Col;
+          break;
+        case Direction.Down:
+          MainCharacter.CurrentLevel = Dungeon[++CurrentLevelNumber];
+          MainCharacter.CurrentRow =
+            MainCharacter.CurrentLevel.UpstairsLocation.Row;
+          MainCharacter.CurrentCol =
+            MainCharacter.CurrentLevel.UpstairsLocation.Col;
+          break;
+      }
+    }
   }
 }
