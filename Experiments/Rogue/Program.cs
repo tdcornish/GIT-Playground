@@ -12,19 +12,16 @@ namespace Rogue
 
     private static MapGenerator Generator;
     private static Level[] Dungeon;
-    private static int CurrentLevelNumber;
+    private static int Depth;
     private static Player MainCharacter;
 
     public static void Main()
     {
       Generator = new MapGenerator();
-      Dungeon = new Level[20];
-      for (int i = 0; i < Dungeon.Length; i++)
-      {
-        Dungeon[i] = Generator.GenerateLevel(Width, Height, Objects);
-      }
-      CurrentLevelNumber = 0;
-      MainCharacter = new Player( Dungeon[CurrentLevelNumber]);
+      CreateDungeon(20);
+
+      Depth = 0;
+      MainCharacter = new Player(Dungeon[Depth]);
       MainCharacter.CurrentLevel.UpdateVisible(MainCharacter);
 
       var window = new RogueWindow(MainCharacter.CurrentLevel, MainCharacter);
@@ -33,6 +30,17 @@ namespace Rogue
         window.DispatchEvents();
         MainCharacter.CurrentLevel.UpdateVisible(MainCharacter);
         window.Display();
+      }
+    }
+
+    private static void CreateDungeon(int depth)
+    {
+      Dungeon = new Level[depth];
+      for (int i = 0; i < depth; i++)
+      {
+        Level level = Generator.GenerateLevel(Width, Height, Objects);
+        level.Depth = i;
+        Dungeon[i] = level;
       }
     }
 
@@ -66,38 +74,17 @@ namespace Rogue
           break;
         case Keyboard.Key.Space:
           TileType playerCurrentTile =
-            MainCharacter.CurrentLevel.Get(MainCharacter.CurrentRow, MainCharacter.CurrentCol)
+            MainCharacter.CurrentLevel.Get(MainCharacter.Location)
                         .Type;
           switch (playerCurrentTile)
           {
             case TileType.Upstairs:
-              ChangeLevel(Direction.Up);
+              MainCharacter.ChangeLevel(Direction.Up, Dungeon);
               break;
             case TileType.Downstairs:
-              ChangeLevel(Direction.Down);
+              MainCharacter.ChangeLevel(Direction.Down, Dungeon);
               break;
           }
-          break;
-      }
-    }
-
-    private static void ChangeLevel(Direction direction)
-    {
-      switch (direction)
-      {
-        case Direction.Up:
-          MainCharacter.CurrentLevel = Dungeon[--CurrentLevelNumber];
-          MainCharacter.CurrentRow =
-            MainCharacter.CurrentLevel.DownstairsLocation.Row;
-          MainCharacter.CurrentCol =
-            MainCharacter.CurrentLevel.DownstairsLocation.Col;
-          break;
-        case Direction.Down:
-          MainCharacter.CurrentLevel = Dungeon[++CurrentLevelNumber];
-          MainCharacter.CurrentRow =
-            MainCharacter.CurrentLevel.UpstairsLocation.Row;
-          MainCharacter.CurrentCol =
-            MainCharacter.CurrentLevel.UpstairsLocation.Col;
           break;
       }
     }

@@ -25,8 +25,13 @@ namespace Rogue
       return Math.Sqrt(a * a + b * b);
     }
 
-    public static IEnumerable<Point> GetPointsOnLine(int x0, int y0, int x1, int y1)
+    public static IEnumerable<Point> GetPointsOnLine(Point p1, Point p2)
     {
+      int x0 = p1.Row;
+      int y0 = p1.Col;
+      int x1 = p2.Row;
+      int y1 = p2.Col;
+
       bool steep = Math.Abs(y1 - y0) > Math.Abs(x1 - x0);
       if (steep)
       {

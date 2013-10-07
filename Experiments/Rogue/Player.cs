@@ -5,12 +5,11 @@ namespace Rogue
 {
   internal class Player
   {
-    public int CurrentCol;
+    public Color Color;
     public Level CurrentLevel;
-    public int CurrentRow;
+    public Point Location;
     public char Symbol;
     public int VisionRange;
-    public Color Color;
 
     public Player(Level startLevel)
     {
@@ -24,15 +23,18 @@ namespace Rogue
 
     private void SetStartingPosition()
     {
-      CurrentRow = Randomizer.GetRand(1, CurrentLevel.Height - 1);
-      CurrentCol = Randomizer.GetRand(1, CurrentLevel.Width - 1);
+      Location = new Point(
+        Randomizer.GetRand(1, CurrentLevel.Height - 1),
+        Randomizer.GetRand(1, CurrentLevel.Width - 1)
+        );
 
-      Tile playerStartTile = CurrentLevel.Get(CurrentRow, CurrentCol);
-      while (playerStartTile.Type != TileType.DirtFloor && playerStartTile.Type != TileType.Corrider)
+      Tile playerStartTile = CurrentLevel.Get(Location);
+      while (playerStartTile.Type != TileType.DirtFloor &&
+        playerStartTile.Type != TileType.Corrider)
       {
-        CurrentRow = Randomizer.GetRand(1, CurrentLevel.Height - 1);
-        CurrentCol = Randomizer.GetRand(1, CurrentLevel.Width - 1);
-        playerStartTile = CurrentLevel.Get(CurrentRow, CurrentCol);
+        Location.Row = Randomizer.GetRand(1, CurrentLevel.Height - 1);
+        Location.Col = Randomizer.GetRand(1, CurrentLevel.Width - 1);
+        playerStartTile = CurrentLevel.Get(Location);
       }
     }
 
@@ -69,35 +71,54 @@ namespace Rogue
 
     public void Move(int deltaRow, int deltaCol)
     {
-      int newRow = CurrentRow + deltaRow;
-      int newCol = CurrentCol + deltaCol;
+      int newRow = Location.Row + deltaRow;
+      int newCol = Location.Col + deltaCol;
 
-      bool outOfBounds = newRow < 0 || newRow >= CurrentLevel.Height || newCol < 0 || newCol >= CurrentLevel.Width;
+      bool outOfBounds = newRow < 0 || newRow >= CurrentLevel.Height ||
+        newCol < 0 || newCol >= CurrentLevel.Width;
       if (!outOfBounds)
       {
         Tile nextTile = CurrentLevel.Get(newRow, newCol);
         if (nextTile.IsPassable)
         {
-          CurrentRow = newRow;
-          CurrentCol = newCol;
+          Location.Row = newRow;
+          Location.Col = newCol;
         }
 
         if (nextTile.Type == TileType.ClosedDoor)
         {
-          CurrentRow = newRow;
-          CurrentCol = newCol;
+          Location.Row = newRow;
+          Location.Col = newCol;
           CurrentLevel.Set(newRow, newCol, TileType.OpenDoor);
         }
       }
     }
 
+    public void ChangeLevel(Direction direction, Level[] dungeon)
+    {
+      switch (direction)
+      {
+        case Direction.Up:
+          CurrentLevel = dungeon[CurrentLevel.Depth - 1];
+          Location = CurrentLevel.DownstairsLocation;
+          break;
+        case Direction.Down:
+          CurrentLevel = dungeon[CurrentLevel.Depth + 1];
+          Location = CurrentLevel.UpstairsLocation;
+          break;
+      }
+    }
+
     public bool CanSee(int row, int col)
     {
-      Point[] lineOfSight = Line.GetPointsOnLine(CurrentRow, CurrentCol, row, col).ToArray();
+      Point[] lineOfSight =
+        Line.GetPointsOnLine(Location, new Point(row, col)).ToArray();
       IOrderedEnumerable<Point> orderedLineOfSight =
-        lineOfSight.OrderBy(p => Line.DistanceBetweenPoints(p, new Point(CurrentRow, CurrentCol)));
+        lineOfSight.OrderBy(p => Line.DistanceBetweenPoints(p, Location));
 
-      Point firstBlocker = orderedLineOfSight.FirstOrDefault(p => Tile.VisionBlockers.Contains(CurrentLevel.Get(p).Type));
+      Point firstBlocker =
+        orderedLineOfSight.FirstOrDefault(
+          p => Tile.VisionBlockers.Contains(CurrentLevel.Get(p).Type));
       if (firstBlocker != null)
       {
         SetVisible(firstBlocker);
@@ -123,7 +144,7 @@ namespace Rogue
 
     private bool InVisionRadius(Point point)
     {
-      double distance = Line.DistanceBetweenPoints(point, new Point(CurrentRow, CurrentCol));
+      double distance = Line.DistanceBetweenPoints(point, Location);
       return distance <= VisionRange;
     }
 

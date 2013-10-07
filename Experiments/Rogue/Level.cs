@@ -9,6 +9,7 @@
 
     public Point UpstairsLocation;
     public Point DownstairsLocation;
+    public int Depth;
 
     public Level(int width, int height)
     {
@@ -48,10 +49,10 @@
 
     public void UpdateVisible(Player player)
     {
-      int startRow = player.CurrentRow - player.VisionRange;
-      int startCol = player.CurrentCol - player.VisionRange;
-      int endRow = player.CurrentRow + player.VisionRange;
-      int endCol = player.CurrentCol + player.VisionRange;
+      int startRow = player.Location.Row - player.VisionRange;
+      int startCol = player.Location.Col - player.VisionRange;
+      int endRow = player.Location.Row + player.VisionRange;
+      int endCol = player.Location.Col + player.VisionRange;
 
       startRow = startRow < 0 ? 0 : startRow;
       endRow = endRow >= Height ? Height - 1 : endRow;
