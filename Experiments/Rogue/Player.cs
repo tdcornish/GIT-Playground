@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using SFML.Graphics;
 
 namespace Rogue
@@ -7,6 +8,7 @@ namespace Rogue
   {
     public Color Color;
     public Level CurrentLevel;
+    public List<Item> Inventory;
     public Point Location;
     public char Symbol;
     public int VisionRange;
@@ -17,25 +19,9 @@ namespace Rogue
       Symbol = '@';
       VisionRange = 5;
       Color = new Color(Color.Red);
+      Inventory = new List<Item>();
 
       SetStartingPosition();
-    }
-
-    private void SetStartingPosition()
-    {
-      Location = new Point(
-        Randomizer.GetRand(1, CurrentLevel.Height - 1),
-        Randomizer.GetRand(1, CurrentLevel.Width - 1)
-        );
-
-      Tile playerStartTile = CurrentLevel.Get(Location);
-      while (playerStartTile.Type != TileType.DirtFloor &&
-        playerStartTile.Type != TileType.Corrider)
-      {
-        Location.Row = Randomizer.GetRand(1, CurrentLevel.Height - 1);
-        Location.Col = Randomizer.GetRand(1, CurrentLevel.Width - 1);
-        playerStartTile = CurrentLevel.Get(Location);
-      }
     }
 
     public void Move(Direction direction)
@@ -83,6 +69,7 @@ namespace Rogue
         {
           Location.Row = newRow;
           Location.Col = newCol;
+          PickupItem(nextTile);
         }
 
         if (nextTile.Type == TileType.ClosedDoor)
@@ -91,6 +78,15 @@ namespace Rogue
           Location.Col = newCol;
           CurrentLevel.Set(newRow, newCol, TileType.OpenDoor);
         }
+      }
+    }
+
+    private void PickupItem(Tile nextTile)
+    {
+      if (nextTile.HasItem())
+      {
+        Inventory.Add(nextTile.Item);
+        nextTile.Item = null;
       }
     }
 
@@ -109,10 +105,35 @@ namespace Rogue
       }
     }
 
-    public bool CanSee(int row, int col)
+    public void UpdateVisible()
+    {
+      int startRow = Location.Row - VisionRange;
+      int startCol = Location.Col - VisionRange;
+      int endRow = Location.Row + VisionRange;
+      int endCol = Location.Col + VisionRange;
+
+      startRow = startRow < 0 ? 0 : startRow;
+      endRow = endRow >= CurrentLevel.Height ? CurrentLevel.Height - 1 : endRow;
+      startCol = startCol < 0 ? 0 : startCol;
+      endCol = endCol >= CurrentLevel.Width ? CurrentLevel.Width - 1 : endCol;
+
+      for (int row = startRow; row < endRow; row++)
+      {
+        for (int col = startCol; col < endCol; col++)
+        {
+          var currentPoint = new Point(row, col);
+          if (CanSee(currentPoint))
+          {
+            SetVisible(currentPoint);
+          }
+        }
+      }
+    }
+
+    private bool CanSee(Point endPoint)
     {
       Point[] lineOfSight =
-        Line.GetPointsOnLine(Location, new Point(row, col)).ToArray();
+        Line.GetPointsOnLine(Location, endPoint).ToArray();
       IOrderedEnumerable<Point> orderedLineOfSight =
         lineOfSight.OrderBy(p => Line.DistanceBetweenPoints(p, Location));
 
@@ -140,6 +161,23 @@ namespace Rogue
         }
       }
       return true;
+    }
+
+    private void SetStartingPosition()
+    {
+      Location = new Point(
+        Randomizer.GetRand(1, CurrentLevel.Height - 1),
+        Randomizer.GetRand(1, CurrentLevel.Width - 1)
+        );
+
+      Tile playerStartTile = CurrentLevel.Get(Location);
+      while (playerStartTile.Type != TileType.DirtFloor &&
+        playerStartTile.Type != TileType.Corrider)
+      {
+        Location.Row = Randomizer.GetRand(1, CurrentLevel.Height - 1);
+        Location.Col = Randomizer.GetRand(1, CurrentLevel.Width - 1);
+        playerStartTile = CurrentLevel.Get(Location);
+      }
     }
 
     private bool InVisionRadius(Point point)

@@ -1,27 +1,26 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace Rogue
 {
   internal class Point
   {
-    public int Row { get; set; }
-    public int Col { get; set; }
-
     public Point(int r, int c)
     {
       Row = r;
       Col = c;
     }
+
+    public int Row { get; set; }
+    public int Col { get; set; }
   }
 
-  class Line
+  internal class Line
   {
     public static double DistanceBetweenPoints(Point p1, Point p2)
     {
-      double a = (double)(p1.Row - p2.Row);
-      double b = (double)(p1.Col - p2.Col);
+      double a = (p1.Row - p2.Row);
+      double b = (p1.Col - p2.Col);
       return Math.Sqrt(a * a + b * b);
     }
 
@@ -66,6 +65,6 @@ namespace Rogue
           error += dx;
         }
       }
-    } 
+    }
   }
 }

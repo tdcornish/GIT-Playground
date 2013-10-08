@@ -74,6 +74,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Direction.cs" />
+    <Compile Include="Graphics Stuff\TileColors.cs" />
+    <Compile Include="Item.cs" />
     <Compile Include="Level.cs" />
     <Compile Include="MapGenerator.cs" />
     <Compile Include="Player.cs" />

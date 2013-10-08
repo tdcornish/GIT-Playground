@@ -10,9 +10,9 @@ namespace Rogue
     public static int Top = 0;
     public static int Left = 0;
 
+    private static int StartingDepth = 0;
     private static MapGenerator Generator;
     private static Level[] Dungeon;
-    private static int Depth;
     private static Player MainCharacter;
 
     public static void Main()
@@ -20,27 +20,26 @@ namespace Rogue
       Generator = new MapGenerator();
       CreateDungeon(20);
 
-      Depth = 0;
-      MainCharacter = new Player(Dungeon[Depth]);
-      MainCharacter.CurrentLevel.UpdateVisible(MainCharacter);
+      MainCharacter = new Player(Dungeon[StartingDepth]);
+      MainCharacter.UpdateVisible();
 
       var window = new RogueWindow(MainCharacter.CurrentLevel, MainCharacter);
       while (window.IsOpen())
       {
         window.DispatchEvents();
-        MainCharacter.CurrentLevel.UpdateVisible(MainCharacter);
+        MainCharacter.UpdateVisible();
         window.Display();
       }
     }
 
-    private static void CreateDungeon(int depth)
+    private static void CreateDungeon(int maxDepth)
     {
-      Dungeon = new Level[depth];
-      for (int i = 0; i < depth; i++)
+      Dungeon = new Level[maxDepth];
+      for (int currentDepth = 0; currentDepth < maxDepth; currentDepth++)
       {
         Level level = Generator.GenerateLevel(Width, Height, Objects);
-        level.Depth = i;
-        Dungeon[i] = level;
+        level.Depth = currentDepth;
+        Dungeon[currentDepth] = level;
       }
     }
 
@@ -75,7 +74,7 @@ namespace Rogue
         case Keyboard.Key.Space:
           TileType playerCurrentTile =
             MainCharacter.CurrentLevel.Get(MainCharacter.Location)
-                        .Type;
+                         .Type;
           switch (playerCurrentTile)
           {
             case TileType.Upstairs:

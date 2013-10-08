@@ -1,6 +1,6 @@
 ﻿namespace Rogue
 {
-  enum Direction
+  internal enum Direction
   {
     North,
     South,

@@ -2,13 +2,20 @@
 
 namespace Rogue
 {
-  class Randomizer
+  internal class Randomizer
   {
     private static readonly Random Rand = new Random();
 
     public static int GetRand(int min, int max)
     {
       return Rand.Next(min, max);
+    }
+
+    public static Item GetRandomItem()
+    {
+      Array items = Enum.GetValues(typeof(ItemType));
+      ItemType randomItem = (ItemType)items.GetValue(Rand.Next(items.Length));
+      return new Item(randomItem);
     }
 
     public static Direction RandomDirection()

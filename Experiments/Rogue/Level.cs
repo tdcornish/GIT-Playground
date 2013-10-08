@@ -2,14 +2,14 @@
 {
   internal class Level
   {
+    public int Depth;
+    public Point DownstairsLocation;
     public int Height;
-    public int Width;
     public Tile[,] Map;
-    public bool[,] Visible;
 
     public Point UpstairsLocation;
-    public Point DownstairsLocation;
-    public int Depth;
+    public bool[,] Visible;
+    public int Width;
 
     public Level(int width, int height)
     {
@@ -28,7 +28,7 @@
 
     public void Set(int row, int col, TileType type)
     {
-      Tile value = new Tile(type);
+      var value = new Tile(type);
       Map[row, col] = value;
     }
 
@@ -45,30 +45,6 @@
     public bool IsVisible(int row, int col)
     {
       return Visible[row, col];
-    }
-
-    public void UpdateVisible(Player player)
-    {
-      int startRow = player.Location.Row - player.VisionRange;
-      int startCol = player.Location.Col - player.VisionRange;
-      int endRow = player.Location.Row + player.VisionRange;
-      int endCol = player.Location.Col + player.VisionRange;
-
-      startRow = startRow < 0 ? 0 : startRow;
-      endRow = endRow >= Height ? Height - 1 : endRow;
-      startCol = startCol < 0 ? 0 : startCol;
-      endCol = endCol >= Width ? Width - 1 : endCol;
-
-      for (int row = startRow; row < endRow; row++)
-      {
-        for (int col = startCol; col < endCol; col++)
-        {
-          if (player.CanSee(row, col))
-          {
-            Visible[row, col] = true;
-          }
-        }
-      }
     }
   }
 }
