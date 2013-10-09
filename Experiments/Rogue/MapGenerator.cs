@@ -8,6 +8,8 @@ namespace Rogue
   {
     private const int RoomChance = 65;
     private const int ItemQuota = 4;
+    private const int MaxRoomWidth = 12;
+    private const int MaxRoomHeight = 9;
 
     private Level Level;
     private int Objects;
@@ -18,7 +20,7 @@ namespace Rogue
       Level = new Level(width, height);
 
       Init();
-      MakeRoom(height / 2, width / 2, 5, 8, Randomizer.RandomDirection());
+      MakeRoom(height / 2, width / 2, Randomizer.RandomDirection());
       int currentFeatures = 1;
       TryBuildFeatures(currentFeatures);
 
@@ -35,7 +37,8 @@ namespace Rogue
       int currentItems = 0;
       for (int i = 0; i < 1000; i++)
       {
-        Point p = new Point(Randomizer.GetRand(0, height -1), Randomizer.GetRand(0, width-1));
+        var p = new Point(Randomizer.GetRand(0, height - 1),
+          Randomizer.GetRand(0, width - 1));
         Tile t = Level.Get(p);
         if (t.IsPassable)
         {
@@ -142,7 +145,7 @@ namespace Rogue
         int feature = Randomizer.GetRand(0, 100);
         if (feature <= RoomChance)
         {
-          if (MakeRoom(row + rowMod, col + colMod, 8, 6, directionToBuild.Value))
+          if (MakeRoom(row + rowMod, col + colMod, directionToBuild.Value))
           {
             currentFeatures++;
             Level.Set(row, col, TileType.ClosedDoor);
@@ -199,20 +202,18 @@ namespace Rogue
       return new Point(0, 0);
     }
 
-    private bool MakeRoom(int row, int col, int maxWidth, int maxHeight,
-      Direction direction)
+    private bool MakeRoom(int row, int col, Direction direction)
     {
-      int roomHeight = Randomizer.GetRand(4, maxHeight);
-      int roomWidth = Randomizer.GetRand(4, maxWidth);
+      int roomHeight = Randomizer.GetRand(4, MaxRoomHeight);
+      int roomWidth = Randomizer.GetRand(4, MaxRoomWidth);
 
       Point[] points =
         GetRoomPoints(row, col, roomWidth, roomHeight, direction).ToArray();
+      bool outOfBoundsOrUsed =
+        points.Any(point => !InBounds(point.Row, point.Col) ||
+          Level.Get(point).Type != TileType.Unused);
 
-      if (
-        points.Any(
-          point =>
-            !InBounds(point.Row, point.Col) ||
-              Level.Get(point).Type != TileType.Unused))
+      if (outOfBoundsOrUsed)
       {
         return false;
       }

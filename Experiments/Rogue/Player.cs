@@ -95,12 +95,20 @@ namespace Rogue
       switch (direction)
       {
         case Direction.Up:
-          CurrentLevel = dungeon[CurrentLevel.Depth - 1];
-          Location = CurrentLevel.DownstairsLocation;
+          bool canGoUp = CurrentLevel.Depth - 1 >= 0;
+          if (canGoUp)
+          {
+            CurrentLevel = dungeon[CurrentLevel.Depth - 1];
+            Location = CurrentLevel.DownstairsLocation;
+          }
           break;
         case Direction.Down:
-          CurrentLevel = dungeon[CurrentLevel.Depth + 1];
-          Location = CurrentLevel.UpstairsLocation;
+          bool canGoDown = CurrentLevel.Depth + 1 < dungeon.Length;
+          if (canGoDown)
+          {
+            CurrentLevel = dungeon[CurrentLevel.Depth + 1];
+            Location = CurrentLevel.UpstairsLocation;            
+          }
           break;
       }
     }

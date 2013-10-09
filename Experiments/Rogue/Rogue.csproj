@@ -74,6 +74,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Direction.cs" />
+    <Compile Include="Graphics Stuff\StatusPanel.cs" />
     <Compile Include="Graphics Stuff\TileColors.cs" />
     <Compile Include="Item.cs" />
     <Compile Include="Level.cs" />

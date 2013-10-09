@@ -5,7 +5,7 @@ namespace Rogue
   internal class Program
   {
     private const int Objects = 50;
-    private const int Width = 60;
+    private const int Width = 40;
     private const int Height = 40;
     public static int Top = 0;
     public static int Left = 0;
