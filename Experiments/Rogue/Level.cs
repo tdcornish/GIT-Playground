@@ -1,4 +1,6 @@
-﻿namespace Rogue
+﻿using System.Collections.Generic;
+
+namespace Rogue
 {
   internal class Level
   {
@@ -10,12 +12,14 @@
     public Point UpstairsLocation;
     public bool[,] Visible;
     public int Width;
+    public List<Item> ItemsOnFloor;
 
     public Level(int width, int height)
     {
       Width = width;
       Height = height;
       Map = new Tile[Height, Width];
+      ItemsOnFloor = new List<Item>();
       Visible = new bool[Height, Width];
       for (int row = 0; row < Height; row++)
       {
@@ -24,6 +28,11 @@
           Visible[row, col] = false;
         }
       }
+    }
+
+    public void AddToItemList(Item item)
+    {
+      ItemsOnFloor.Add(item);
     }
 
     public void Set(int row, int col, TileType type)

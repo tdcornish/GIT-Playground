@@ -73,9 +73,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Global.cs" />
     <Compile Include="Direction.cs" />
     <Compile Include="Graphics Stuff\StatusPanel.cs" />
     <Compile Include="Graphics Stuff\TileColors.cs" />
+    <Compile Include="ItemGenerator.cs" />
     <Compile Include="Item.cs" />
     <Compile Include="Level.cs" />
     <Compile Include="MapGenerator.cs" />
@@ -83,7 +85,7 @@
     <Compile Include="Point.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Randomizer.cs" />
+    <Compile Include="Rng.cs" />
     <Compile Include="Graphics Stuff\RogueWindow.cs" />
     <Compile Include="Graphics Stuff\SpriteCoordinates.cs" />
     <Compile Include="Tile.cs" />

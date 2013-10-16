@@ -107,7 +107,7 @@ namespace Rogue
           if (canGoDown)
           {
             CurrentLevel = dungeon[CurrentLevel.Depth + 1];
-            Location = CurrentLevel.UpstairsLocation;            
+            Location = CurrentLevel.UpstairsLocation;
           }
           break;
       }
@@ -174,16 +174,16 @@ namespace Rogue
     private void SetStartingPosition()
     {
       Location = new Point(
-        Randomizer.GetRand(1, CurrentLevel.Height - 1),
-        Randomizer.GetRand(1, CurrentLevel.Width - 1)
+        Rng.RandRange(1, CurrentLevel.Height - 1),
+        Rng.RandRange(1, CurrentLevel.Width - 1)
         );
 
       Tile playerStartTile = CurrentLevel.Get(Location);
       while (playerStartTile.Type != TileType.DirtFloor &&
         playerStartTile.Type != TileType.Corrider)
       {
-        Location.Row = Randomizer.GetRand(1, CurrentLevel.Height - 1);
-        Location.Col = Randomizer.GetRand(1, CurrentLevel.Width - 1);
+        Location.Row = Rng.RandRange(1, CurrentLevel.Height - 1);
+        Location.Col = Rng.RandRange(1, CurrentLevel.Width - 1);
         playerStartTile = CurrentLevel.Get(Location);
       }
     }

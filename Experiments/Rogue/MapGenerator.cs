@@ -20,7 +20,7 @@ namespace Rogue
       Level = new Level(width, height);
 
       Init();
-      MakeRoom(height / 2, width / 2, Randomizer.RandomDirection());
+      MakeRoom(height / 2, width / 2, Rng.RandomDirection());
       int currentFeatures = 1;
       TryBuildFeatures(currentFeatures);
 
@@ -37,12 +37,14 @@ namespace Rogue
       int currentItems = 0;
       for (int i = 0; i < 1000; i++)
       {
-        var p = new Point(Randomizer.GetRand(0, height - 1),
-          Randomizer.GetRand(0, width - 1));
-        Tile t = Level.Get(p);
-        if (t.IsPassable)
+        var p = new Point(Rng.RandRange(0, height - 1),
+          Rng.RandRange(0, width - 1));
+        Tile tile = Level.Get(p);
+        if (tile.IsPassable)
         {
-          t.Item = Randomizer.GetRandomItem();
+          Item newItem = ItemGenerator.CreateItem();
+          tile.Item = newItem;
+          Level.AddToItemList(newItem);
           currentItems++;
         }
 
@@ -80,8 +82,8 @@ namespace Rogue
     {
       for (int testing = 0; testing < 1000; testing++)
       {
-        row = Randomizer.GetRand(1, Level.Height - 1);
-        col = Randomizer.GetRand(1, Level.Width - 1);
+        row = Rng.RandRange(1, Level.Height - 1);
+        col = Rng.RandRange(1, Level.Width - 1);
 
         TileType testTile = Level.Get(row, col).Type;
         if (testTile == TileType.DirtWall || testTile == TileType.DirtFloor)
@@ -142,7 +144,7 @@ namespace Rogue
     {
       if (directionToBuild.HasValue)
       {
-        int feature = Randomizer.GetRand(0, 100);
+        int feature = Rng.RandRange(0, 100);
         if (feature <= RoomChance)
         {
           if (MakeRoom(row + rowMod, col + colMod, directionToBuild.Value))
@@ -166,7 +168,7 @@ namespace Rogue
 
     private void Init()
     {
-      Level.Map = new Tile[Level.Height,Level.Width];
+      Level.Map = new Tile[Level.Height, Level.Width];
       for (int row = 0; row < Level.Height; row++)
       {
         for (int col = 0; col < Level.Width; col++)
@@ -180,8 +182,8 @@ namespace Rogue
     {
       for (int i = 0; i < 1000; i++)
       {
-        int row = Randomizer.GetRand(1, Level.Height);
-        int col = Randomizer.GetRand(1, Level.Width);
+        int row = Rng.RandRange(1, Level.Height);
+        int col = Rng.RandRange(1, Level.Width);
 
         IEnumerable<Tuple<Point, Direction>> surroundingPoints =
           GetSurroundingPoints(new Point(row, col));
@@ -204,8 +206,8 @@ namespace Rogue
 
     private bool MakeRoom(int row, int col, Direction direction)
     {
-      int roomHeight = Randomizer.GetRand(4, MaxRoomHeight);
-      int roomWidth = Randomizer.GetRand(4, MaxRoomWidth);
+      int roomHeight = Rng.RandRange(4, MaxRoomHeight);
+      int roomWidth = Rng.RandRange(4, MaxRoomWidth);
 
       Point[] points =
         GetRoomPoints(row, col, roomWidth, roomHeight, direction).ToArray();
@@ -373,7 +375,7 @@ namespace Rogue
     private bool MakeCorridor(int row, int col, int colLength,
       Direction direction)
     {
-      int deltaCol = Randomizer.GetRand(2, colLength);
+      int deltaCol = Rng.RandRange(2, colLength);
 
       bool corriderMade = false;
       switch (direction)
